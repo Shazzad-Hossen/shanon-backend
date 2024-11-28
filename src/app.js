@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const form = require('express-form-data');
 const http= require('node:http');
+// import http2 from 'node:https';
 const path= require('node:path');
 const setvices = require('./services/index');
 const crypto = require('./utils/crypto');
@@ -24,16 +25,9 @@ class App {
         //load midlewares
         this.express.use(
             cors({
-                origin: (origin, callback) => {
-                    if (!origin || this.config.origin.includes(origin)) {
-                        callback(null, true);
-                    } else {
-                        callback(new Error('Not allowed by CORS'));
-                    }
-                },
-                credentials: true,
-            })
-        );
+              origin: this.config.origin,
+              credentials: true
+            }));
         this.express.use(morgan('common'));
         this.express.use(express.json());
         this.express.use(cookieParser());
@@ -80,6 +74,10 @@ class App {
 
 
     listen(){
+        this.express.get('*', (req, res) => {
+            res.sendFile(path.resolve(process.cwd(), '..', 'client', 'index.html'));
+          });
+          
         this.server.listen(this.config.PORT,async()=>{
             console.log(`=> Listening on ${this.config.PORT}`);
         })
