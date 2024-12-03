@@ -9,6 +9,7 @@ const path= require('node:path');
 const setvices = require('./services/index');
 const crypto = require('./utils/crypto');
 const cors= require('cors');
+const { fileUp } = require('./controllers/fileUp');
 
 class App {
     constructor({ deps }) {
@@ -17,6 +18,7 @@ class App {
         this.config=settings;
         this.crypto=crypto;
         this.router= new express.Router();
+        this.fileUp=fileUp;
 
     }
 
@@ -68,7 +70,7 @@ class App {
           route: this.router,
           crypto: this.crypto,
           settings: this.config,
-          fileUp:this.fileUp
+          fileUp: this.fileUp,
         });
       }
 

@@ -1,5 +1,5 @@
 const { auth, checkRole } = require("../middlewares");
-const { createCategory, getAllCategory, deleteCategory, editCategory } = require("./category.entity");
+const { createCategory, getAllCategory, deleteCategory, editCategory, getAllCategoriesWithSubCategories } = require("./category.entity");
 
 
 function category(){
@@ -8,6 +8,7 @@ function category(){
     this.route.get('/category',getAllCategory(this));
     this.route.delete('/category/:_id', auth, checkRole(['super-admin']),deleteCategory(this));
     this.route.patch('/category/:_id', auth, checkRole(['super-admin']),editCategory(this));
+    this.route.get('/category-with-sub', auth, checkRole(['super-admin']),getAllCategoriesWithSubCategories(this));
     
 
 

@@ -57,3 +57,26 @@ module.exports.deleteCategory=()=>async(req,res)=>{
         
     }
 }
+
+module.exports.getAllCategoriesWithSubCategories=()=>async(req,res)=>{
+    try {
+        const categories = await Category.aggregate([
+            {
+              '$lookup': {
+                'from': 'subcategories', 
+                'localField': '_id', 
+                'foreignField': 'category', 
+                'as': 'subcategories'
+              }
+            }
+          ]);
+
+
+          return res.status(200).send({data:categories});
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({message:'Something went wrong.'})
+        
+    }
+}
