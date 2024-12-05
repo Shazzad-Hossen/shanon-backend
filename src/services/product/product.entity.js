@@ -24,9 +24,12 @@ module.exports.addProduct=({fileUp})=>async(req,res)=>{
 module.exports.getAllProducts = () => async (req, res) => {
     try {
       const { limit = 10, page = 1 } = req.query; // Set default values
+      const query={};
+      
+      if(req?.query?.subcategory && req?.query?.subcategory!=='null' ) query.subcategory= req.query.subcategory;
   
       const products = await Product.paginate(
-        {}, // Query filter
+        {...query}, // Query filter
         {
           populate: [
             { path: 'category' }, // Populate category
@@ -44,4 +47,37 @@ module.exports.getAllProducts = () => async (req, res) => {
       return res.status(500).send({ message: 'Something went wrong' });
     }
   };
+
+  module.exports.getSingleProduct=()=>async(req,res)=>{
+    try {
+      if(!req.params._id) return res.status(400).send({message:'Bad request'});
+      const product = await Product.findOne({ _id: req.params._id })
+      .populate('category subcategory')
+      .populate('variants.color');
+      if(!product) return res.status(404).send({message:'Product not found'});
+      return res.status(200).send({data: product});
+
+      
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Something went wrong' });
+    
+      
+    }
+  }
   
+
+  module.exports.removeProduct=()=>async(req,res)=>{
+    try {
+      if(!req.params._id) return res.status(400).send({message:'Bad request'});
+
+      const deleteRes= await Product.deleteOne({_id:req.params._id});
+        if(deleteRes.acknowledged && deleteRes.deletedCount) return res.status(200).send({success:true, message:'Category successfully deleted'});
+        return res.status(500).send({success:false, message:'Something went wrong'});
+      
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Something went wrong' });
+      
+    }
+  }

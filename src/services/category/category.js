@@ -8,7 +8,7 @@ function category(){
     this.route.get('/category',getAllCategory(this));
     this.route.delete('/category/:_id', auth, checkRole(['super-admin']),deleteCategory(this));
     this.route.patch('/category/:_id', auth, checkRole(['super-admin']),editCategory(this));
-    this.route.get('/category-with-sub', auth, checkRole(['super-admin']),getAllCategoriesWithSubCategories(this));
+    this.route.get('/category-with-sub',getAllCategoriesWithSubCategories(this));
     
 
 

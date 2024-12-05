@@ -4,6 +4,7 @@ const color = require("./color/color");
 const demo = require("./demo/demo");
 const file = require("./file/file");
 const product = require("./product/product");
+const review = require("./review/review");
 const subCategory = require("./subcategory/subcategory");
 const user = require("./user/user");
 
@@ -17,6 +18,7 @@ module.exports= (app) => {
     app.configure(color);
     app.configure(product);
     app.configure(file);
+    app.configure(review);
     
 
     
