@@ -5,7 +5,7 @@ const Counter = require('../counter/counter.schema')
 
 const schema = new Schema({
 user: { type: Schema.Types.ObjectId, ref: 'User'},
-status:{ type: String, enum:['pending','processing','delivered'], default:'pending'},
+status:{ type: String, enum:['pending','processing','delivered', 'cancelled'], default:'pending'},
 region: { type: Schema.Types.ObjectId, ref: 'Region'},
 city: { type: Schema.Types.ObjectId, ref: 'City'},
 area: { type: Schema.Types.ObjectId, ref: 'Area'},

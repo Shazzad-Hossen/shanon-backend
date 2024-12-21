@@ -1,6 +1,8 @@
 const User = require('./user.schema');
 
 const createAllowed= new Set(['fullName','email', 'password']);
+const updateAllowed= new Set(['fullName', 'password', 'newPassword']);
+
 
 
 module.exports.createUser=({crypto})=>async(req,res)=>{
@@ -28,7 +30,7 @@ module.exports.login=({crypto,settings})=>async(req,res)=>{
         const user = await User.findOne({email: req.body.email});
         if(!user) return res.status(404).send({success:false, message:'No user found with this email address'});
         const password = crypto.decrypt(user.password);
-        console.log(password);
+      
         if(password!=req.body.password.trim()) return res.status(400).send({success:false, message:'Incorrect Password'});
         const bearerToken= crypto.encrypt({_id: user._id, email:user.email});
         res.cookie(settings.COOKIE_NAME, bearerToken, {
@@ -58,3 +60,43 @@ module.exports.me=()=>async(req,res)=>{
         
     }
 }
+
+module.exports.signout = ({ settings }) => async (req, res) => {
+    try {
+      res.clearCookie(settings.COOKIE_NAME, {
+        httpOnly: true,
+        ...settings.useHTTP2 && {
+          sameSite: 'None',
+          secure: true,
+        },
+        expires: new Date(Date.now())
+      });
+      return res.status(200).send({message:'Signout successful'});
+    }
+    catch (err) {
+      console.log(err);
+      return res.status(500).send({success:false, message:'Something went wrong'});
+    }
+  };
+  
+
+  module.exports.updateProfile=({crypto})=>async(req,res)=>{
+    try {
+        const valid = Object.keys(req.body).every(key=>updateAllowed.has(key));
+        if(!valid) return res.status(400).send({message:'bad request'});
+        if(req.body.password && req.body.newPassword){
+            const password = crypto.decrypt(req.user.password);
+            if(req.body.password!==password) return res.status(400).send({message:'Incorrect password'})
+            req.body.password = crypto.encrypt(req.body.newPassword);
+        delete req.body.newPassword
+        }
+        Object.keys(req.body).forEach(key=>req.user[key]=req.body[key]);
+        await req.user.save();
+        return res.status(200).send({message: 'Profile successfully updated'})
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({success:false, message:'Something went wrong'});
+        
+    }
+  }

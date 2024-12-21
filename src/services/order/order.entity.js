@@ -19,7 +19,12 @@ module.exports.createOrder= ()=>async(req,res)=>{
 module.exports.getAllOrders=()=>async(req,res)=>{
   try {
      const { limit = 10, page = 1 } = req.query; // Set default values
+        
           const query={};
+          if(req?.query?.user){
+            if(req.user._id.toString()!==req.query.user &&( req.user.role!=='admin' || req.user.role!=='super-admin')) return res.status(401).send({message:'Unauthorized'});
+            query.user=req.query.user;
+          }
           
           if(req?.query?.orderId && req?.query?.orderId!=='' ) query.orderId= req.query.orderId;
           if(req?.query?.user && req?.query?.user!=='' ) query.user= req.query.user;
@@ -84,10 +89,12 @@ module.exports.changeOrderStatus=()=>async(req,res)=>{
     const status= req?.query?.status;
     const _id= req?.query?._id;   
   
+  
 
     if(!status || !_id) return res.status(400).send({message:'Bad request'});
-    if(!['pending','processing', 'delivered'].includes(status)) return res.status(400).send({message:'Bad request'});
-    const order = await Order.findOne({_id})
+    if(!['pending','processing', 'delivered', 'cancelled'].includes(status)) return res.status(400).send({message:'Bad request'});
+
+   const order = await Order.findOne({_id})
     .populate('user region city area')
     .populate({
       path: 'items.product',
@@ -96,6 +103,7 @@ module.exports.changeOrderStatus=()=>async(req,res)=>{
         model: 'Color',
       },
     });
+    if(status==='cancelled' && (req.user._id.toString()!==order.user._id.toString() && (req.user.role!=='admin' || req.user.role!=='super-admin' )))  return res.status(401).send({message:'Unauthorized'});
     if(!order) return res.status(404).send({message:'Order not found'});
     order.status=status;
     await order.save()
