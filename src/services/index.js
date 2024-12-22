@@ -9,6 +9,7 @@ const subCategory = require("./subcategory/subcategory");
 const user = require("./user/user");
 const shinningAddress = require("./shinningAddress/shinningAddress");
 const order = require("./order/order");
+const banner = require("./banner/banner");
 
 
 
@@ -23,6 +24,7 @@ module.exports= (app) => {
     app.configure(review);
     app.configure(shinningAddress);
     app.configure(order);
+    app.configure(banner);
     
 
     

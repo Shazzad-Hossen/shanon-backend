@@ -1,12 +1,14 @@
 const { auth } = require("../middlewares");
-const { getReviews } = require("./review.entity");
+const { getReviews, createReview, getOrderReviews } = require("./review.entity");
 
 
 
 function review(){
-    //create new user
-    // this.route.post('/review',auth,createUser(this));-
+    this.route.post('/review',auth, createReview(this));
     this.route.get('/review',getReviews(this));
+    this.route.get('/review/:orderId',auth,getOrderReviews(this));
+    
+    
 
 
 

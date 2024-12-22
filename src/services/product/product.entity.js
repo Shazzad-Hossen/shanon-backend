@@ -1,4 +1,5 @@
 const Product = require('./product.schema');
+const Review = require('../review/review.schema');
 const createAllowed=new Set(['variants','description','name','price','shippingInsideDhaka', 'shippingOutsideDhaka','category', 'subcategory']);
 
 module.exports.addProduct=({fileUp})=>async(req,res)=>{
@@ -28,7 +29,7 @@ module.exports.getAllProducts = () => async (req, res) => {
       
       if(req?.query?.subcategory && req?.query?.subcategory!=='null' ) query.subcategory= req.query.subcategory;
   
-      const products = await Product.paginate(
+      let products = await Product.paginate(
         {...query}, // Query filter
         {
           populate: [
@@ -40,8 +41,28 @@ module.exports.getAllProducts = () => async (req, res) => {
           page: parseInt(page),
         }
       );
+
+      products= JSON.parse(JSON.stringify(products));
+      for(let i=0;i<products.docs.length;i++){
+        const reviews= await Review.find({product: products.docs[i]._id.toString()});
+        products.docs[i].total_reviews=reviews.length.toString();
+
+        if(reviews.length===0){
+          products.docs[i].rating=0;
+
+        }
+        else {
+          let sum=0;
+          reviews.forEach(r=>{
+            sum+=r.rating;
+          });
+          products.docs[i].rating=sum/reviews.length;
+       
+        }
+       
+      }
   
-      return res.status(200).send({ data: products });
+      return res.status(200).send({ data: JSON.parse(JSON.stringify(products)) });
     } catch (error) {
       console.error(error);
       return res.status(500).send({ message: 'Something went wrong' });
@@ -51,10 +72,23 @@ module.exports.getAllProducts = () => async (req, res) => {
   module.exports.getSingleProduct=()=>async(req,res)=>{
     try {
       if(!req.params._id) return res.status(400).send({message:'Bad request'});
-      const product = await Product.findOne({ _id: req.params._id })
+      let product = await Product.findOne({ _id: req.params._id })
       .populate('category subcategory')
       .populate('variants.color');
       if(!product) return res.status(404).send({message:'Product not found'});
+      product =JSON.parse(JSON.stringify(product));
+      const reviews= await Review.find({product: product._id.toString()}).populate('user');
+      product.reviews=reviews;
+      product.total_reviews= reviews.length;
+      if(reviews.length===0){
+        product.rating=0
+      }
+      else {
+        let sum=0;
+        reviews.forEach(r=>sum+=r.rating);
+        product.rating= sum/reviews.length;
+      }
+
       return res.status(200).send({data: product});
 
       

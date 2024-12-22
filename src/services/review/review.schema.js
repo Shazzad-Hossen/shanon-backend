@@ -4,6 +4,7 @@ const paginate = require('mongoose-paginate-v2');
 
 const schema = new Schema({
   user: {type: Schema.Types.ObjectId, ref:'User'},
+  order: {type: Schema.Types.ObjectId, ref:'Order'},
   product: {type: Schema.Types.ObjectId, ref:'Product'},
   rating: { type: Number, required:true, default: 0 },
   comment: {type: String, required: true }

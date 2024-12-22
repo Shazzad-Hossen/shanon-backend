@@ -3,9 +3,8 @@ const paginate = require('mongoose-paginate-v2');
 
 
 const schema = new Schema({
-  name: { type: String, required: true, unique:true },
-  image: { type: String, required: true, },
-  category: { type:Schema.Types.ObjectId, ref:'Category'},
+  title: { type: String, required: true },
+  image: { type: String, required: true },
 
 }, { timestamps: true });
 schema.plugin(paginate);
@@ -17,4 +16,4 @@ schema.methods.toJSON = function () {
   return JSON.parse(JSON.stringify(obj));
 };
 
-module.exports= model('Subcategory', schema);
+module.exports= model('Banner', schema);

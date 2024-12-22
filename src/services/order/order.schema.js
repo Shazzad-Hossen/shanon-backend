@@ -20,6 +20,7 @@ items: [
     }
 ],
 orderId: { type: Number, unique: true },
+reviewed:{type: Boolean, default: false}
 
 
 }, { timestamps: true });
