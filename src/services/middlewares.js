@@ -3,10 +3,13 @@ const crypto = require("../utils/crypto");
 const User = require('./user/user.schema')
 
 
-
 module.exports.auth= async(req,res,next)=>{
-    const cookie = req.cookies[settings.COOKIE_NAME];
-    if(!cookie) return res.status(401).send({ message: 'Unauthorized' });
+    let cookie = req.cookies[settings.COOKIE_NAME];
+    if(!cookie){
+        const authorization = req.headers.authorization;
+        if(authorization) cookie=authorization.split(' ')[1];
+    }
+    if(!cookie)return res.status(401).send({ message: 'Unauthorized' });
     const decoded =  crypto.decrypt(cookie);
     if(!decoded._id || !decoded.email) return res.status(401).send({ message: 'Unauthorized' });
     const user = await User.findOne({_id:decoded._id});
@@ -14,6 +17,7 @@ module.exports.auth= async(req,res,next)=>{
     else req.user=user;
     next();
 };
+
 
 module.exports.checkRole = (roles = []) => {
     return (req, res, next) => {
