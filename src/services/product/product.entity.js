@@ -115,3 +115,18 @@ module.exports.getAllProducts = () => async (req, res) => {
       
     }
   }
+
+  module.exports.searchProducts=()=>async(req,res)=>{
+    try {
+      const query={};
+      if(req.query.keyword) query.name=  {$regex: req.query.keyword, $options: 'i'};
+      if(req.query.subcategory) query.subcategory= req.query.subcategory;
+      const products= await Product.find({...query}).populate('category subcategory');
+      return res.status(200).send({data: products});
+      
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Something went wrong' });
+      
+    }
+  }
