@@ -19,6 +19,7 @@ module.exports.createOrder= ()=>async(req,res)=>{
 module.exports.getAllOrders=()=>async(req,res)=>{
   try {
      const { limit = 10, page = 1 } = req.query; // Set default values
+
         
           const query={};
           if(req?.query?.user){
@@ -93,7 +94,6 @@ module.exports.changeOrderStatus=()=>async(req,res)=>{
 
     if(!status || !_id) return res.status(400).send({message:'Bad request'});
     if(!['pending','processing', 'delivered', 'cancelled'].includes(status)) return res.status(400).send({message:'Bad request'});
-
    const order = await Order.findOne({_id})
     .populate('user region city area')
     .populate({

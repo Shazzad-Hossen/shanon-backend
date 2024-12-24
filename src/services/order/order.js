@@ -5,7 +5,7 @@ function order (){
     this.route.post('/order',auth,createOrder(this));
     this.route.get('/order',auth, getAllOrders(this));
     this.route.get('/order/:_id',auth, getSingleOrder(this));
-    this.route.patch('/order/',auth,checkRole(['admin','super-admin']), changeOrderStatus(this));
+    this.route.patch('/order/',auth, changeOrderStatus(this));
     
     
     
