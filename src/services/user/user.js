@@ -1,5 +1,5 @@
 const { auth } = require("../middlewares");
-const { createUser, login, me, signout, updateProfile } = require("./user.entity");
+const { createUser, login, me, signout, updateProfile, forGotPassword, verityOtp, resetPassword } = require("./user.entity");
 
 
 function user(){
@@ -9,6 +9,10 @@ function user(){
     this.route.get('/me',auth,me(this));
     this.route.get('/signout',auth,signout(this));
     this.route.patch('/user',auth,updateProfile(this));
+    this.route.post('/forgot-password',forGotPassword(this));
+    this.route.post('/verify-otp',verityOtp(this));
+    this.route.post('/reset-password',resetPassword(this));
+    
     
     
 

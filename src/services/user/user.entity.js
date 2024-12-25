@@ -100,3 +100,60 @@ module.exports.signout = ({ settings }) => async (req, res) => {
         
     }
   }
+
+
+  module.exports.forGotPassword=({crypto})=>async(req,res)=>{{
+    try {
+      if(!req.body.email) return res.status(400).send({message:'Bad request'});
+      const user = await User.findOne({email: req.body.email});
+      if(!user) return res.status(404).send({message:'No user found with this email address'});
+      //send email with link to reset password
+      const otp = Math.floor(1000 + Math.random() * 9000);
+      console.log(otp);//replace it with email sending
+      const token = crypto.encrypt({otp, email: req.body.email, validity:  new Date(new Date().getTime() + 5 * 60 * 1000)});
+      res.status(200).send({message:'OTP sent to your email address', token});
+
+
+      
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({success:false, message:'Something went wrong'});
+      
+    }
+  }}
+
+
+  module.exports.verityOtp=({crypto})=>async(req,res)=>{
+    try {
+      if(!req.body.otp || !req.body.token || !req.body.email) return res.status(400).send({message:'Bad request'});
+      const {otp, email, validity} = crypto.decrypt(req.body.token);
+      if(otp!=req.body.otp) return res.status(400).send({message:'Incorrect OTP'});
+      if(new Date()>validity) return res.status(400).send({message:'OTP expired'});
+      const token = crypto.encrypt({ email: req.body.email, validity:  new Date(new Date().getTime() + 5 * 60 * 1000)});
+      return res.status(200).send({message:'OTP verified successfully', token});
+      
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({success:false, message:'Something went wrong'});
+      
+    }
+  }
+
+  module.exports.resetPassword=({crypto})=>async(req,res)=>{
+    try {
+      if(!req.body.newPassword || !req.body.token || !req.body.email) return res.status(400).send({message:'Bad request'});
+      const { email, validity} = crypto.decrypt(req.body.token);
+ 
+      if(new Date()>validity) return res.status(401).send({message:'Unauthorized access'});
+      const user = await User.findOne({email});
+      if(!user) return res.status(404).send({message:'No user found with this email address'});
+      user.password = crypto.encrypt(req.body.newPassword);
+      await user.save();
+      return res.status(200).send({message:'Password reset successfully'});
+      
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({success:false, message:'Something went wrong'});
+      
+    }
+  }
