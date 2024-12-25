@@ -10,6 +10,7 @@ const setvices = require('./services/index');
 const crypto = require('./utils/crypto');
 const cors= require('cors');
 const { fileUp } = require('./controllers/fileUp');
+const newMailer = require('./controllers/mailer');
 
 class App {
     constructor({ deps }) {
@@ -35,6 +36,7 @@ class App {
         this.express.use(cookieParser());
         this.express.use(form.parse());
         this.express.use('/api', this.router);
+        this.mailer= newMailer(this.config);
       
 
 
@@ -71,6 +73,7 @@ class App {
           crypto: this.crypto,
           settings: this.config,
           fileUp: this.fileUp,
+          mail:this.mailer,
         });
       }
 

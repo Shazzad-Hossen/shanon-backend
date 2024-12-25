@@ -1,3 +1,4 @@
+const { getOtpTemplate } = require('../../utils/otpEmailTemplate');
 const User = require('./user.schema');
 
 const createAllowed= new Set(['fullName','email', 'password']);
@@ -102,15 +103,16 @@ module.exports.signout = ({ settings }) => async (req, res) => {
   }
 
 
-  module.exports.forGotPassword=({crypto})=>async(req,res)=>{{
+  module.exports.forGotPassword=({crypto, mail})=>async(req,res)=>{{
     try {
       if(!req.body.email) return res.status(400).send({message:'Bad request'});
       const user = await User.findOne({email: req.body.email});
       if(!user) return res.status(404).send({message:'No user found with this email address'});
       //send email with link to reset password
       const otp = Math.floor(1000 + Math.random() * 9000);
-      console.log(otp);//replace it with email sending
+      const template = getOtpTemplate(otp);
       const token = crypto.encrypt({otp, email: req.body.email, validity:  new Date(new Date().getTime() + 5 * 60 * 1000)});
+      await mail({receiver: req.body.email, subject:'Password reset OTP', body:template, type:'html'});
       res.status(200).send({message:'OTP sent to your email address', token});
 
 
