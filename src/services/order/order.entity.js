@@ -23,7 +23,7 @@ module.exports.getAllOrders=()=>async(req,res)=>{
         
           const query={};
           if(req?.query?.user){
-            if(req.user._id.toString()!==req.query.user &&( req.user.role!=='admin' || req.user.role!=='super-admin')) return res.status(401).send({message:'Unauthorized'});
+            if(req.user._id.toString()!==req.query.user &&( req.user.role==='user')) return res.status(401).send({message:'Unauthorized'});
             query.user=req.query.user;
           }
           
@@ -44,6 +44,7 @@ module.exports.getAllOrders=()=>async(req,res)=>{
               ],
               limit: parseInt(limit),
               page: parseInt(page),
+              sort: { createdAt: -1 }
             }
           );
       
@@ -103,9 +104,17 @@ module.exports.changeOrderStatus=()=>async(req,res)=>{
         model: 'Color',
       },
     });
-    if(status==='cancelled' && (req.user._id.toString()!==order.user._id.toString() && (req.user.role!=='admin' || req.user.role!=='super-admin' )))  return res.status(401).send({message:'Unauthorized'});
     if(!order) return res.status(404).send({message:'Order not found'});
+    if(req.user.role=='user') {
+      if(req?.query?.total) return res.status(403).send({message:'Forbidden'});
+      else if(req.user._id.toString()!==order.user._id.toString())  return res.status(401).send({message:'Unauthorized'});
+      else if(order.status!=='pending') return res.status(401).send({message:'Unauthorized'});
+      else if(status!=='cancelled') return res.status(401).send({message:'Unauthorized'});
+
+    }
+    
     order.status=status;
+    if(req?.query?.total) order.total=req.query.total;
     await order.save()
     return res.status(200).send({data:order})
 

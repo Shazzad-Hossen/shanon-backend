@@ -7,6 +7,17 @@ const schema = new Schema({
   fullName: { type: String, required:true },
   password: { type: String, required: true },
   role: { type: String, enum:['user', 'admin','super-admin'], default:'user'},
+  accessList:{
+    inventory: { type: Boolean, default: false },
+    order: { type: Boolean, default: false },
+    user: { type: Boolean, default: false },
+    banner: { type: Boolean, default: false },
+    category: { type: Boolean, default: false },
+    subcategory: { type: Boolean, default: false },
+    colorFamily: { type: Boolean, default: false },
+    content: { type: Boolean, default: false },
+    message: { type: Boolean, default: false },
+  }
  
 }, { timestamps: true });
 schema.plugin(paginate);

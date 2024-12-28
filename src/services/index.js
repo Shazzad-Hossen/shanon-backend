@@ -10,6 +10,9 @@ const user = require("./user/user");
 const shinningAddress = require("./shinningAddress/shinningAddress");
 const order = require("./order/order");
 const banner = require("./banner/banner");
+const dashboard = require("./dashboard/dashboard");
+const content = require("./content/content");
+const message = require("./message/message");
 
 
 
@@ -25,6 +28,11 @@ module.exports= (app) => {
     app.configure(shinningAddress);
     app.configure(order);
     app.configure(banner);
+    app.configure(dashboard);
+    app.configure(content);
+    app.configure(message);
+
+    
     
 
     

@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const Product = require('./product.schema');
 const Review = require('../review/review.schema');
 const createAllowed=new Set(['variants','description','name','price','shippingInsideDhaka', 'shippingOutsideDhaka','category', 'subcategory']);
@@ -104,6 +106,12 @@ module.exports.getAllProducts = () => async (req, res) => {
   module.exports.removeProduct=()=>async(req,res)=>{
     try {
       if(!req.params._id) return res.status(400).send({message:'Bad request'});
+      const product = await Product.findOne({_id:req.params._id});
+      if(!product) return res.status(404).send({message:'Product not found'});
+      product.images.forEach((image) => {
+        const imagePath = path.resolve(__dirname,'../../../files', image?.split('file/')[1]);
+        if (fs.existsSync(imagePath))fs.unlinkSync(imagePath);
+      });
 
       const deleteRes= await Product.deleteOne({_id:req.params._id});
         if(deleteRes.acknowledged && deleteRes.deletedCount) return res.status(200).send({success:true, message:'Category successfully deleted'});
@@ -123,6 +131,49 @@ module.exports.getAllProducts = () => async (req, res) => {
       if(req.query.subcategory) query.subcategory= req.query.subcategory;
       const products= await Product.find({...query}).populate('category subcategory');
       return res.status(200).send({data: products});
+      
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Something went wrong' });
+      
+    }
+  }
+
+  module.exports.updateProduct=({fileUp})=>async(req,res)=>{
+    try {
+
+      if(!req.body.data) return res.status(400).send({message:'Bad request'});
+      req.body= JSON.parse(req.body.data);
+
+      const product = await Product.findOne({_id: req.body._id});
+      if(!product) return res.status(404).send({message:'Product not found'});
+      delete req.body._id;
+      const deletedImages=[];
+      product.images.forEach(img=>{
+        if(!req.body.images.includes(img)){
+          deletedImages.push(img);
+        }
+      });
+
+    
+      deletedImages.forEach((image) => {
+         const imagePath = path.resolve(__dirname,'../../../files', image?.split('file/')[1]);
+          if (fs.existsSync(imagePath))fs.unlinkSync(imagePath);
+      });
+      if(req?.files?.images){
+        const files = Array.isArray(req.files?.images) ? req.files.images :[req.files.images] ;
+        for(let i=0;i<files.length;i++){
+            req.body.images.push(await fileUp(files[i].path));
+        }
+      }
+      Object.keys(req.body).forEach(key=>product[key]=req.body[key]);
+      await product.save();
+  
+      return res.status(200).send({ message: 'Product updated successfully' });
+
+      
+
+   
       
     } catch (error) {
       console.error(error);

@@ -12,6 +12,7 @@ area: { type: Schema.Types.ObjectId, ref: 'Area'},
 name: { type: String, required: true},
 address: { type: String, required: true},
 phone: { type: String, required: true},
+total: { type: Number, default: 0},
 items: [
     {
         product:{type:Schema.Types.ObjectId, ref:'Product'},
