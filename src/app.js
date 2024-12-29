@@ -37,6 +37,7 @@ class App {
         this.express.use(form.parse());
         this.express.use('/api', this.router);
         this.mailer= newMailer(this.config);
+        this.express.use(express.static(path.resolve(process.cwd(), 'client')));
       
 
 
@@ -78,15 +79,15 @@ class App {
       }
 
 
-    listen(){
+      listen() {
+        // Serve the index.html for unknown routes (React/Vue/Angular single-page apps)
         this.express.get('*', (req, res) => {
-            res.sendFile(path.resolve(process.cwd(), '..', 'client', 'index.html'));
-          });
-          
-        this.server.listen(this.config.PORT,async()=>{
+            res.sendFile(path.resolve(process.cwd(), 'client', 'index.html'));
+        });
+    
+        this.server.listen(this.config.PORT, async () => {
             console.log(`=> Listening on ${this.config.PORT}`);
-        })
-
+        });
     }
 }
 
