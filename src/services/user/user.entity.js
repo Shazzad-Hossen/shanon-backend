@@ -1,6 +1,7 @@
 const { getOtpTemplate } = require('../../utils/otpEmailTemplate');
 const User = require('./user.schema');
 const Order = require('../order/order.schema');
+const Cart = require('../cart/cart.schema');
 const createAllowed = new Set(['fullName', 'email', 'password']);
 const updateAllowed = new Set(['fullName', 'password', 'newPassword']);
 const accessList=new Set(['inventory', 'order', 'user', 'banner', 'category', 'subcategory', 'colorFamily', 'content', 'message']);
@@ -43,7 +44,8 @@ module.exports.login = ({ crypto, settings }) => async (req, res) => {
       },
       ...!req.body.rememberMe && { expires: new Date(Date.now() + 172800000/*2 days*/) },
     });
-    return res.status(200).send({ success: true, message: 'Credential matched', Authorization: 'BEARER ' + bearerToken, data: user })
+    const cart = await Cart.find({ user: user._id }).populate('product');
+    return res.status(200).send({ success: true, message: 'Credential matched', Authorization: 'BEARER ' + bearerToken, data: {...user, cart: cart} })
 
   } catch (error) {
     console.log(error);

@@ -13,6 +13,7 @@ const banner = require("./banner/banner");
 const dashboard = require("./dashboard/dashboard");
 const content = require("./content/content");
 const message = require("./message/message");
+const cart = require("./cart/cart");
 
 
 
@@ -31,6 +32,7 @@ module.exports= (app) => {
     app.configure(dashboard);
     app.configure(content);
     app.configure(message);
+    app.configure(cart);
 
     
     
