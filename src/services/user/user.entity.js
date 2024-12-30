@@ -45,7 +45,8 @@ module.exports.login = ({ crypto, settings }) => async (req, res) => {
       ...!req.body.rememberMe && { expires: new Date(Date.now() + 172800000/*2 days*/) },
     });
     const cart = await Cart.find({ user: user._id }).populate('product');
-    return res.status(200).send({ success: true, message: 'Credential matched', Authorization: 'BEARER ' + bearerToken, data: {...user, cart: cart} })
+    let userObj = JSON.parse(JSON.stringify(user));
+    return res.status(200).send({ success: true, message: 'Credential matched', Authorization: 'BEARER ' + bearerToken, data: {...userObj, cart: cart} })
 
   } catch (error) {
     console.log(error);
