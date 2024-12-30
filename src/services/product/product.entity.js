@@ -2,13 +2,14 @@ const fs = require('fs');
 const path = require('path');
 const Product = require('./product.schema');
 const Review = require('../review/review.schema');
-const createAllowed=new Set(['variants','description','name','price','shippingInsideDhaka', 'shippingOutsideDhaka','category', 'subcategory']);
+const createAllowed=new Set(['variants','description','name','price','shippingInsideDhaka', 'shippingOutsideDhaka','category', 'subcategory', 'discountPercentage', 'originalPrice']);
 
 module.exports.addProduct=({fileUp})=>async(req,res)=>{
     try {
         if(!req.files?.file) return res.status(400).send({message: 'Bad request'});
         const files = Array.isArray(req.files?.file) ? req.files.file :[req.files.file] ;
         req.body= JSON.parse(req.body.data);
+        req.body.price= req.body.originalPrice*(1-req.body.discountPercentage/100);
         const valid = Object.keys(req.body).every(key=>createAllowed.has(key)) && [...createAllowed].every(key=>Object.keys(req.body).includes(key));
         if(!valid) return res.status(400).send({message:'Bad request'});
         req.body.images=[];
@@ -149,6 +150,7 @@ module.exports.getAllProducts = () => async (req, res) => {
       if(!product) return res.status(404).send({message:'Product not found'});
       delete req.body._id;
       const deletedImages=[];
+      req.body.price= req.body.originalPrice*(1-req.body.discountPercentage/100);
       product.images.forEach(img=>{
         if(!req.body.images.includes(img)){
           deletedImages.push(img);

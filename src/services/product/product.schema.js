@@ -17,6 +17,8 @@ const schema = new Schema({
  category: { type: Schema.Types.ObjectId, ref:'Category' ,required: true },
  subcategory: { type: Schema.Types.ObjectId, ref:'Subcategory' ,required: true },
  images:[ { type: String}],
+ discountPercentage:{type: Number,  default: 0},
+ originalPrice:{type: Number,  default: 0, required: true},
 
 
 }, { timestamps: true });
