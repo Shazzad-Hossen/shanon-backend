@@ -1,3 +1,4 @@
+const { deductQuantity, adjustquantity } = require('./order.function');
 const Order = require('./order.schema');
 const createAllowed= new Set(['region', 'city', 'area', 'name', 'address', 'phone','items'])
 module.exports.createOrder= ()=>async(req,res)=>{
@@ -7,6 +8,7 @@ module.exports.createOrder= ()=>async(req,res)=>{
     req.body.user= req.user._id.toString();
     const order = await Order.create(req.body);
     if(!order)  return res.status(500).send({message: 'Something went wrong'});
+    deductQuantity(req.body.items);
     return res.status(201).send({data: order});
     
   } catch (error) {
@@ -115,6 +117,7 @@ module.exports.changeOrderStatus=()=>async(req,res)=>{
     
     order.status=status;
     if(req?.query?.total) order.total=req.query.total;
+    adjustquantity(JSON.parse(JSON.stringify(order)));
     await order.save()
     return res.status(200).send({data:order})
 

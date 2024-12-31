@@ -1,4 +1,4 @@
-const { model, Schema } = require("mongoose");
+const { model, Schema, trusted } = require("mongoose");
 const paginate = require('mongoose-paginate-v2');
 const Counter = require('../counter/counter.schema')
 
@@ -21,7 +21,8 @@ items: [
     }
 ],
 orderId: { type: Number, unique: true },
-reviewed:{type: Boolean, default: false}
+reviewed:{type: Boolean, default: false},
+deducted:{type: Boolean, default: true},
 
 
 }, { timestamps: true });
