@@ -32,7 +32,6 @@ module.exports.removeFavourite = ()=>async(req,res)=>{
     try {
         if(!req.params.id) return res.status(400).send({ message: 'Product id is required' });
         const ress = await Favourite.findByIdAndDelete(req.params.id);
-        console.log(ress);
         const favouriteLis= await Favourite.find({user:req.user._id.toString()}).populate('product');
         return res.status(200).send({ message: 'Success', data: favouriteLis });
     } catch (error) {
