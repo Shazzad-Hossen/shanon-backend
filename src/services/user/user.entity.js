@@ -4,7 +4,7 @@ const Order = require('../order/order.schema');
 const Cart = require('../cart/cart.schema');
 const createAllowed = new Set(['fullName', 'email', 'password']);
 const updateAllowed = new Set(['fullName', 'password', 'newPassword']);
-const accessList=new Set(['inventory', 'order', 'user', 'banner', 'category', 'subcategory', 'colorFamily', 'content', 'message']);
+const accessList=new Set(['inventory', 'order', 'user', 'banner', 'category', 'subcategory', 'colorFamily', 'content', 'message', 'faqs', 'tmc', 'aboutUs']);
 
 
 

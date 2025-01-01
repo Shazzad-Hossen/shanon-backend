@@ -4,7 +4,7 @@ const { updateContent, getContent } = require("./content.entity");
 
 function content (){
     this.route.get('/content',getContent(this));
-    this.route.post('/content',auth, checkRole(['super-admin']),updateContent(this));
+    this.route.post('/content',auth, checkRole(['super-admin', 'admin']),updateContent(this));
    
 
 

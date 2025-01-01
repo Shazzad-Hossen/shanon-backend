@@ -17,6 +17,10 @@ const schema = new Schema({
     colorFamily: { type: Boolean, default: false },
     content: { type: Boolean, default: false },
     message: { type: Boolean, default: false },
+    faqs: { type: Boolean, default: false },
+    tmc: { type: Boolean, default: false },
+    aboutUs: { type: Boolean, default: false },
+    
   }
  
 }, { timestamps: true });

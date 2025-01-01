@@ -4,10 +4,10 @@ const { createCategory, getAllCategory, deleteCategory, editCategory, getAllCate
 
 function category(){
     //create new category
-    this.route.post('/category', auth, checkRole(['super-admin']),createCategory(this));
+    this.route.post('/category', auth, checkRole(['super-admin', 'admin']),createCategory(this));
     this.route.get('/category',getAllCategory(this));
-    this.route.delete('/category/:_id', auth, checkRole(['super-admin']),deleteCategory(this));
-    this.route.patch('/category/:_id', auth, checkRole(['super-admin']),editCategory(this));
+    this.route.delete('/category/:_id', auth, checkRole(['super-admin', 'admin']),deleteCategory(this));
+    this.route.patch('/category/:_id', auth, checkRole(['super-admin', 'admin']),editCategory(this));
     this.route.get('/category-with-sub',getAllCategoriesWithSubCategories(this));
     
 

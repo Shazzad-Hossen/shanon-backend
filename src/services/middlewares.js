@@ -23,6 +23,7 @@ module.exports.checkRole = (roles = []) => {
     return (req, res, next) => {
         (async () => {
             try {
+                
                 if (roles.includes(req.user.role)) {
                     return next();
                 } else {
