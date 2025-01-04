@@ -28,7 +28,7 @@ module.exports.createUser = ({ crypto }) => async (req, res) => {
 
 module.exports.login = ({ crypto, settings }) => async (req, res) => {
   try {
-    console.log(req.body);
+    
     if (!req.body.email || !req.body.password) return res.status(400).send({ success: false, message: 'Bad request' });
     const user = await User.findOne({ email: req.body.email });
     if (!user) return res.status(404).send({ success: false, message: 'No user found with this email address' });
