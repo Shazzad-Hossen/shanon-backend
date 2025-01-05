@@ -59,7 +59,8 @@ module.exports.getOrderGraph = () => async (req, res) => {
         }
         today--;
       }
-      return res.status(200).send({ categories: cat, orders: ord });
+      
+      return res.status(200).send({ categories: cat.reverse(), orders: ord.reverse() });
     }
     else if(req.query.filter==='month'){
       let today = new Date().getDate();
@@ -80,7 +81,7 @@ module.exports.getOrderGraph = () => async (req, res) => {
       today--;
 
      }
-     return res.status(200).send({ categories: cat, orders: ord });
+     return res.status(200).send({ categories: cat.reverse(), orders: ord.reverse() });
 
     }
     else if(req.query.filter==='year'){
@@ -103,10 +104,10 @@ module.exports.getOrderGraph = () => async (req, res) => {
         today--;
   
        }
-       return res.status(200).send({ categories: cat, orders: ord });
+       return res.status(200).send({ categories: cat.reverse(), orders: ord.reverse() });
 
     }
-    
+
 
   
   } catch (error) {
