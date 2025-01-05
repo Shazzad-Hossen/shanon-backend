@@ -74,7 +74,6 @@ module.exports.signout = ({ settings }) => async (req, res) => {
         sameSite: 'None',
         secure: true,
       },
-      expires: new Date(Date.now())
     });
     return res.status(200).send({ message: 'Signout successful' });
   }
