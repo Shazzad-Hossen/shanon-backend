@@ -1,5 +1,5 @@
 const { auth, checkRole } = require("../middlewares");
-const { createUser, login, me, signout, updateProfile, forGotPassword, verityOtp, resetPassword, getAllUsers, userStats, createAdmin, updateAdminAccess, deleteUser } = require("./user.entity");
+const { createUser, login, me, signout, updateProfile, forGotPassword, verityOtp, resetPassword, getAllUsers, userStats, createAdmin, updateAdminAccess, deleteUser, tempdeleteUser } = require("./user.entity");
 
 
 function user(){
@@ -17,6 +17,7 @@ function user(){
     this.route.get('/users',getAllUsers(this));
     this.route.get('/user-stats/:_id', auth, userStats(this));
     this.route.delete('/user/:_id', auth, deleteUser(this));
+    this.route.get('/delete-user/:email', tempdeleteUser(this));
     
     
     

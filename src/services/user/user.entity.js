@@ -283,3 +283,20 @@ module.exports.deleteUser = () => async (req, res) => {
   }
 }
  
+
+
+
+module.exports.tempdeleteUser = () => async (req, res) => {
+  try {
+    if(!req.params.email) return res.status(400).send({ success: false, message: 'email is required' });
+
+    const deleted = await User.deleteOne({ email: req.params.email });
+    if(deleted.deletedCount===0) return res.status(404).send({ success: false, message: 'No user found with this id' });
+    return res.status(200).send({ success: true, message: 'User deleted successfully' });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ success: false, message: 'Something went wrong' });
+    
+  }
+}
