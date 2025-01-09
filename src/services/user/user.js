@@ -17,7 +17,7 @@ function user(){
     this.route.get('/users',getAllUsers(this));
     this.route.get('/user-stats/:_id', auth, userStats(this));
     this.route.delete('/user/:_id', auth, deleteUser(this));
-    this.route.get('/delete-user/:email', tempdeleteUser(this));
+    this.route.post('/delete-user/', tempdeleteUser(this));
     
     
     

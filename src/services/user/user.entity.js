@@ -286,11 +286,15 @@ module.exports.deleteUser = () => async (req, res) => {
 
 
 
-module.exports.tempdeleteUser = () => async (req, res) => {
+module.exports.tempdeleteUser = ({crypto}) => async (req, res) => {
   try {
-    if(!req.params.email) return res.status(400).send({ success: false, message: 'email is required' });
+    if(!req.body.email || !req.body.password ) return res.status(400).send({ success: false, message: 'email and password is required' });
+    const exist = await User.findOne({email: req.body.email});
+    if(!exist) return res.status(404).send({message:'invalid email or password'});
 
-    const deleted = await User.deleteOne({ email: req.params.email });
+    const password= crypto.decrypt(exist.password);
+    if(password!==req.body.password)  return res.status(400).send({message:'invalid password'});
+    const deleted = await User.deleteOne({ _id: exist._id.toString() });
     if(deleted.deletedCount===0) return res.status(404).send({ success: false, message: 'No user found with this id' });
     return res.status(200).send({ success: true, message: 'User deleted successfully' });
 
