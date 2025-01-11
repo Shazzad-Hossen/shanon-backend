@@ -1,5 +1,5 @@
 const Content= require('./content.schema');     
-const updateAllowed=new Set(['footerDescription', 'address', 'phone', 'email', 'facebookUrl', 'instagramUrl', 'youtubeUrl', 'twitterUrl', 'playStoreUrl', 'faqs', 'termsAndConditions', 'aboutUs']);
+const updateAllowed=new Set(['footerDescription', 'address', 'phone', 'email', 'facebookUrl', 'instagramUrl', 'youtubeUrl', 'twitterUrl', 'playStoreUrl', 'faqs', 'termsAndConditions', 'aboutUs', 'showBrands']);
 
 module.exports.updateContent=()=>async(req,res)=>{
     try {

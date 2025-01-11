@@ -6,7 +6,7 @@ module.exports.pipelines={
             '$ne': 'cancelled'
           },
           'createdAt': {
-            '$gte':new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+            '$gte':new Date(Date.now() - 6 * 24 * 60 * 60 * 1000)
           }
         }
       },
@@ -34,7 +34,7 @@ module.exports.pipelines={
               '$ne': 'cancelled'
             },
             'createdAt': {
-              '$gte':new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+              '$gt':new Date(Date.now() - 29 * 24 * 60 * 60 * 1000)
             }
           }
         },
@@ -61,7 +61,7 @@ module.exports.pipelines={
               '$ne': 'cancelled'
             },
             'createdAt': {
-              '$gte':new Date(Date.now() - 12 * 30 * 24 * 60 * 60 * 1000)
+              '$gt':new Date(Date.now() - 11 * 30 * 24 * 60 * 60 * 1000)
             }
           }
         },

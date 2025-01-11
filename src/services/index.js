@@ -15,6 +15,7 @@ const content = require("./content/content");
 const message = require("./message/message");
 const cart = require("./cart/cart");
 const favourite = require("./favourite/favourite");
+const brand = require("./brands/brands");
 
 
 
@@ -35,6 +36,7 @@ module.exports= (app) => {
     app.configure(message);
     app.configure(cart);
     app.configure(favourite);
+    app.configure(brand);
     
 
     

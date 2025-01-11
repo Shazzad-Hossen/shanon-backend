@@ -15,6 +15,7 @@ const schema = new Schema({
   faqs: { type: Array },
   termsAndConditions: { type: String },
   aboutUs: { type: String },
+  showBrands: { type: Boolean, default: true },
   
 
 }, { timestamps: true });
